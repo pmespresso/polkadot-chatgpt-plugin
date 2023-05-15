@@ -1,34 +1,88 @@
-import json
-
 import quart
 import quart_cors
-from quart import request
+from quart import Quart, jsonify, request
+import httpx
 
 app = quart_cors.cors(quart.Quart(__name__), allow_origin="https://chat.openai.com")
+url = 'https://polkadot.api.subscan.io/api'
+headers = {
+    'Content-Type': 'application/json',
+    'X-API-Key': 'abb5735610c64c40a761f2bcb185230c' # free api key so idc really 
+}
 
-# Keep track of todo's. Does not persist if Python session is restarted.
-_TODOS = {}
+@app.get("/now")
+async def get_timestamp():
+    print ("GET TIMESTAMP")
+    payload = {}
 
-@app.post("/todos/<string:username>")
-async def add_todo(username):
-    request = await quart.request.get_json(force=True)
-    if username not in _TODOS:
-        _TODOS[username] = []
-    _TODOS[username].append(request["todo"])
-    return quart.Response(response='OK', status=200)
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url+'/now', json=payload, headers=headers)
 
-@app.get("/todos/<string:username>")
-async def get_todos(username):
-    return quart.Response(response=json.dumps(_TODOS.get(username, [])), status=200)
+    # Check if the request was successful
+    if response.status_code == 200:
+        return jsonify(response.json())
+    else:
+        return jsonify({"error": "Failed to make the POST request"}), 500
 
-@app.delete("/todos/<string:username>")
-async def delete_todo(username):
-    request = await quart.request.get_json(force=True)
-    todo_idx = request["todo_idx"]
-    # fail silently, it's a simple plugin
-    if 0 <= todo_idx < len(_TODOS[username]):
-        _TODOS[username].pop(todo_idx)
-    return quart.Response(response='OK', status=200)
+@app.get("/metadata")
+async def get_metadata():
+    payload = {}
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url+'/scan/metadata', json=payload, headers=headers)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        return jsonify(response.json())
+    else:
+        return jsonify({"error": "Failed to make the POST request"}), 500
+    
+# @app.get('/accounts')
+# async def get_accounts(row, page, order='desc', order_field='', min_balance=100, max_balance=100000000, filter, address):
+#     payload = {}
+
+#     async with httpx.AsyncClient() as client:
+#         response = await client.post(url+'/scan/accounts', json=payload, headers=headers)
+
+#     # Check if the request was successful
+#     if response.status_code == 200:
+#         return jsonify(response.json())
+#     else:
+#         return jsonify({"error": "Failed to make the POST request"}), 500
+    
+@app.get('/proposals')
+async def get_proposals():
+    payload = {
+        'row': 6,
+        'page': 1
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url+'/scan/treasury/proposals', json=payload, headers=headers)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        return jsonify(response.json())
+    else:
+        return jsonify({"error": "Failed to make the POST request"}), 500
+    
+@app.get('/daily-stats')
+async def get_daily_stats():
+    payload = {
+        "start": "2023-05-13",
+        "end": "2023-05-14",
+        "format": "day",
+        "category": "TreasurySpend"
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url+'/v2/scan/daily', json=payload, headers=headers)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        return jsonify(response.json())
+    else:
+        return jsonify({"error": "Failed to make the POST request"}), 500
 
 @app.get("/logo.png")
 async def plugin_logo():

@@ -1,93 +1,152 @@
 openapi: 3.0.1
 info:
-  title: TODO Plugin
-  description: A plugin that allows the user to create and manage a TODO list using ChatGPT. If you do not know the user's username, ask them first before making queries to the plugin. Otherwise, use the username "global".
-  version: 'v1'
+  title: Subscan Plugin
+  description: A plugin that allows the user to ask questions about the Polkadot blockchain and get answers in a way a human that isn't Gavin Wood can understand.
+  version: "v1"
 servers:
   - url: http://localhost:5003
 paths:
-  /todos/{username}:
+  /now:
     get:
-      operationId: getTodos
-      summary: Get the list of todos
-      parameters:
-      - in: path
-        name: username
-        schema:
-            type: string
-        required: true
-        description: The name of the user.
+      operationId: timestamp
+      summary: Subscan server timestamp
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getTodosResponse'
-    post:
-      operationId: addTodo
-      summary: Add a todo to the list
-      parameters:
-      - in: path
-        name: username
-        schema:
-            type: string
-        required: true
-        description: The name of the user.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/addTodoRequest'
+                $ref: "#/components/schemas/getTimestampResponse"
+  /metadata:
+    get:
+      operationId: metadata
+      summary: Subscan global stats
       responses:
         "200":
           description: OK
-    delete:
-      operationId: deleteTodo
-      summary: Delete a todo from the list
-      parameters:
-      - in: path
-        name: username
-        schema:
-            type: string
-        required: true
-        description: The name of the user.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/deleteTodoRequest'
-      responses:
-        "200":
-          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getMetadataResponse"
+
+  /proposals:
+    get:
+      operationId: treasury_proposals
+      summary: Get Treasury Proposals
+  /daily-stats:
+    get:
+      operationId: daily_stats
+      summary: Get Daily Stats
+      # parameters:
+      #   - in: path
+      #     name: row
+      #     schema:
+      #       type: number
+      #     required: true
+      #     description: The row of the treasury proposals collection to query
+      #   - in: path
+      #     name: page
+      #     schema:
+      #       type: number
+      #     required: true
+      #     description: The page of the treasury proposals collection to query
+
+  # /accounts/${row}/${page}/${order}/${order_field}/${min_balance}/${max_balance}/${filter}/${address}:
+  #   get:
+  #     operationId: accounts
+  #     summary: Accounts list
+  #      parameters:
+  #               - in: path
+  #                 name: row
+  #                 schema:
+  #                     type: number
+  #                 required: true
+  #                 description: The row of the accounts database to query for the accounts list
+  #               - in: path
+  #                 name: page
+  #                 schema:
+  #                   type: number
+  #                 required: true
+  #                 description: The page of the accounts database to query for the accounts list
+  #               - in: path
+  #                 name: order
+  #                 schema:
+  #                   type: string
+  #                 required: false
+  #                 description: Descending or Ascending
 
 components:
   schemas:
-    getTodosResponse:
+    getTimestampResponse:
       type: object
       properties:
-        todos:
-          type: array
-          items:
-            type: string
-          description: The list of todos.
-    addTodoRequest:
-      type: object
-      required:
-      - todo
-      properties:
-        todo:
+        code:
+          type: number
+        message:
           type: string
-          description: The todo to add to the list.
-          required: true
-    deleteTodoRequest:
+        data:
+          type: number
+        generated_at:
+          type: number
+    getMetadataResponse:
       type: object
-      required:
-      - todo_idx
       properties:
-        todo_idx:
-          type: integer
-          description: The index of the todo to delete.
-          required: true
+        code:
+          type: number
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            addressType:
+              type: string
+            avgBlockTime:
+              type: string
+            blockNum:
+              type: string
+            blockTime:
+              type: string
+            bootTime:
+              type: string
+            commissionAccuracy:
+              type: string
+            count_account:
+              type: string
+            count_event:
+              type: string
+            count_signed_extrinsic:
+              type: string
+            count_transfer:
+              type: string
+            current_era:
+              type: string
+            current_validator_count:
+              type: string
+            epochLength:
+              type: string
+            epochProcess:
+              type: string
+            eraLength:
+              type: string
+            eraProcess:
+              type: string
+            exist_roles:
+              type: string
+            finalized_blockNum:
+              type: string
+            history_depth:
+              type: string
+            implName:
+              type: string
+            maxNominatorRewardedPerValidator:
+              type: string
+            networkNode:
+              type: string
+            specVersion:
+              type: string
+            unbondDuration:
+              type: string
+            validator_count:
+              type: string
+            waiting_validator:
+              type: string

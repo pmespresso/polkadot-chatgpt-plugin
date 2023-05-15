@@ -1,31 +1,5 @@
-# ChatGPT plugins quickstart
+### Make Polkadot Understandable for Us Midwits (ChatGPT Plugin)
 
-Get a todo list ChatGPT plugin up and running in under 5 minutes using Python. If you do not already have plugin developer access, please [join the waitlist](https://openai.com/waitlist/plugins).
+One blockchain is hard enough to understand. Multichains exponentiate how complicated it is. Thankfully we have indexers with public APIs.
 
-## Setup
-
-To install the required packages for this plugin, run the following command:
-
-```bash
-pip install -r requirements.txt
-```
-
-To run the plugin, enter the following command:
-
-```bash
-python main.py
-```
-
-Once the local server is running:
-
-1. Navigate to https://chat.openai.com. 
-2. In the Model drop down, select "Plugins" (note, if you don't see it there, you don't have access yet).
-3. Select "Plugin store"
-4. Select "Develop your own plugin"
-5. Enter in `localhost:5003` since this is the URL the server is running on locally, then select "Find manifest file".
-
-The plugin should now be installed and enabled! You can start with a question like "What is on my todo list" and then try adding something to it as well! 
-
-## Getting help
-
-If you run into issues or have questions building a plugin, please join our [Developer community forum](https://community.openai.com/c/chat-plugins/20).
+People made Dashboards and made blockchains a bit more understandable. But we're all still too dumb and lazy. I want to know who is Gav sending money to? What is the latest treasury proposal and who will it go to? Should I care?
